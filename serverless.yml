@@ -1,0 +1,183 @@
+service: UE1API${opt:stage}APITEMPLATE001
+
+plugins:
+  - serverless-plugin-include-dependencies
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: us-east-2
+  stage: ${opt:stage}
+  timeout: 120
+  memorySize: 512
+  versionFunctions: false
+  deploymentBucket:
+    name: "ue1stgdesaas3prv001"
+    # name: "ue1stgtestas3prv001"
+    serverSideEncryption: AES256
+  stackTags:
+    name: "ue1stgdesaas3prv001"
+    # name: "ue1stgtestas3prv001"
+    ENTORNO: DESARROLLO
+    PROYECTO: PORTAL CANALES
+    DOMINIO: RIMAC
+    RESPONSABLE: DANNY ESCALANTE
+    ESTADO_OPERACION: PROYECTO
+    RESPALDO: BSEM
+
+  #Roles AWS
+  iamRoleStatements:
+    - Effect: "Allow"
+      Action:
+            - ec2:CreateNetworkInterface
+            - ec2:DescribeNetworkInterfaces
+            - ec2:DeleteNetworkInterface
+      Resource: "*"
+    - Effect: "Allow"
+      Action: 
+            - "s3:*"
+      Resource: "arn:aws:s3:::${self:provider.environment.BUCKET}/*"
+    - Effect: Allow
+      Action:
+          - lambda:InvokeFunction
+      Resource: "*"
+
+  #Varaibles de entorno a nivel de todo el API
+  environment:
+    BUCKET: "ue1stg${opt:stage}as3prv001"
+    BUCKET_PRIV: "ue1stg${opt:stage}as3prv001"
+    region: "${self:provider.region}"
+    stage: "${self:provider.stage}"
+    AWS_IDENTITY_POOL: "us-east-2:8634cd25-e662-4d62-b444-cd2554b05719"
+    AWS_USER_POOL_ID_PERSON: "us-east-2_wzoAxuqra"
+    AWS_USER_POOL_ID_ENTERPRISE: "us-east-2_e7TzPkaZM"
+    AWS_USER_POOL_ID_BROKER: "us-east-2_LWcm4K7oK"
+    AWS_SES_HOST: "email-smtp.us-east-1.amazonaws.com"
+    AWS_SES_AUTH_USER: "AKIAJ5FYYSKMGRYZSRJA"
+    AWS_SES_AUTH_PSS: "AhDvJdDDa5BrDYlIBjxqHjJ2UTxYM9o7eU3fdFDSfIwZ"
+    SAS_CONNECTSTRING: "rsdce-scan.rimac.com.pe/BDSAST3"
+    SAS_USER: "JMENDOZA"
+    SAS_PASSWORD: "sqa2015p"
+    SAS_CLOUD_HOST: "ue1dbatestrdsdtlr01.czcriav4h9lp.us-east-2.rds.amazonaws.com"
+    SAS_CLOUD_USER: "DS-AWSBDSAS-PCAN"
+    SAS_CLOUD_PASSWORD: "R$mac$$2583"
+    SAS_CLOUD_DATABASE: "APP_IAA_TERCERO"
+    LAMBDA_GETUSER: "UE1API${opt:stage}LMBTEMPLATE001"
+
+package:
+  exclude:
+  - node_modules/**
+
+functions:
+  getUser:
+    handler: src/controllers/TemplateController.getUser
+    name: UE1API${opt:stage}LMBTEMPLATE001
+    description: BUSCA USUARIO POR TIPO 
+    tags:
+      NAME: UE1API${opt:stage}LMBTEMPLATE001
+      ENTORNO: DESARROLLO
+      PROYECTO: PORTAL CANALES - MODULO TEMPLATE
+      DOMINIO: RIMAC
+      RESPONSABLE: MIGUEL FARFAN
+      ESTADO_OPERACION: PROYECTO
+      RESPALDO: BSEM 
+    events:
+      - http:
+          path: /template/buscarUsuario
+          method: post
+          cors: true
+
+  getUserByLambda:
+    handler: src/controllers/TemplateController.getUserByLambda
+    name: UE1API${opt:stage}LMBTEMPLATE002
+    description: OBTENER USUARIOS POR TIPO DESDE LAMBDA
+    tags:
+      NAME: UE1API${opt:stage}LMBTEMPLATE002
+      ENTORNO: DESARROLLO
+      PROYECTO: PORTAL CANALES - MODULO TEMPLATE
+      DOMINIO: RIMAC
+      RESPONSABLE: MIGUEL FARFAN
+      ESTADO_OPERACION: PROYECTO
+      RESPALDO: BSEM 
+    events:
+      - http:
+          path: /template/buscarUsuarioByLambda
+          method: post
+          cors: true
+
+  executeQueryOracle:
+    handler: src/controllers/TemplateController.executeQueryOracle
+    name: UE1API${opt:stage}LMBTEMPLATE003
+    description: Execute Query Oracle
+    tags:
+      NAME: UE1API${opt:stage}LMBTEMPLATE003
+      ENTORNO: DESARROLLO
+      PROYECTO: PORTAL CANALES - MODULO TEMPLATE
+      DOMINIO: RIMAC
+      RESPONSABLE: MIGUEL FARFAN
+      ESTADO_OPERACION: PROYECTO
+      RESPALDO: BSEM 
+    vpc:
+     securityGroupIds:
+       - sg-075d2dcb7e1387c65
+       - sg-02a731a9a39029b83
+     subnetIds:
+       - subnet-1a2bf260
+       - subnet-6f5c3c07
+    events:
+      - http:
+          path: /template/executeQueryOracle
+          method: post
+          cors: true
+
+  executeProcedureOracle:
+    handler: src/controllers/TemplateController.executeProcedureOracle
+    name: UE1API${opt:stage}LMBTEMPLATE004
+    description: Execute Query Oracle
+    tags:
+      NAME: UE1API${opt:stage}LMBTEMPLATE004
+      ENTORNO: DESARROLLO
+      PROYECTO: PORTAL CANALES - MODULO TEMPLATE
+      DOMINIO: RIMAC
+      RESPONSABLE: MIGUEL FARFAN
+      ESTADO_OPERACION: PROYECTO
+      RESPALDO: BSEM
+    vpc:
+     securityGroupIds:
+       - sg-075d2dcb7e1387c65
+       - sg-02a731a9a39029b83
+     subnetIds:
+       - subnet-1a2bf260
+       - subnet-6f5c3c07
+    events:
+      - http:
+          path: /template/executeProcedureOracle
+          method: post
+          cors: true
+
+  executeQueryMySql:
+    handler: src/controllers/TemplateController.executeQueryMySql
+    name: UE1API${opt:stage}LMBTEMPLATE005
+    description: Execute Query Mysql
+    tags:
+      NAME: UE1API${opt:stage}LMBTEMPLATE005
+      ENTORNO: DESARROLLO
+      PROYECTO: PORTAL CANALES - MODULO TEMPLATE
+      DOMINIO: RIMAC
+      RESPONSABLE: MIGUEL FARFAN
+      ESTADO_OPERACION: PROYECTO
+      RESPALDO: BSEM
+    vpc:
+     securityGroupIds:
+       - sg-34283f5f
+     subnetIds:
+       - subnet-1a2bf260
+       - subnet-ea5a3a82
+       - subnet-6f5c3c07
+       - subnet-712ef70B
+    events:
+      - http:
+          path: /template/executeQueryMySql
+          method: post
+          cors: true

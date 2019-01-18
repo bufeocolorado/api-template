@@ -1,0 +1,16 @@
+extends: airbnb-base
+plugins:
+  - import
+rules:
+  arrow-body-style: 0
+  no-underscore-dangle: 0
+  linebreak-style: ["error", "windows"]
+  comma-dangle: ["error","always-multiline"]
+  # indent: [1, "tab"]
+  no-mixed-spaces-and-tabs: ["error", "smart-tabs"]
+  no-param-reassign: ["error", { "props": false }]
+  "object-shorthand": ["error", "consistent"]
+  max-len: ["error", { "code": 150 }]
+
+globals:
+  __: true
