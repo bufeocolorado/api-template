@@ -11,7 +11,7 @@ const dbconfig = {
 
 class CloudConnection {
   static async _createPool() {
-    if (typeof poolConnection === 'undefined') {
+    if (!poolConnection) {
       poolConnection = await MySqlDatabase.createPool(dbconfig);
     }
   }
@@ -20,7 +20,7 @@ class CloudConnection {
     await this._createPool();
     const result = await MySqlDatabase.executeSQL(sql, bindParams, target, poolConnection);
     // TODO: Se esta trabajando en una mejor form de cerrar el pool de conexiones
-    await MySqlDatabase.closePool(poolConnection);
+    // await MySqlDatabase.closePool(poolConnection);
     return result;
   }
 }

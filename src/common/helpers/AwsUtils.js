@@ -4,10 +4,55 @@ const BusinessError = require('../../common/models/BusinessError');
 const ErrorConstants = require('../constants/errorConstants');
 
 class AwsUtils {
-  static async invokeFunction(functionName, event) {
-    const trace = this.getTraceRequest(event);
-    const payload = this.getPayloadRequest(event);
+  static async invokeFunction(functionName, trace, payload) {
+    // const trace = this.getTraceRequest(event);
+    // const payload = this.getPayloadRequest(event);
 
+    AWS.config.region = process.env.region;
+    AWS.config.credentials = new AWS.CognitoIdentityCredentials({
+      IdentityPoolId: process.env.AWS_IDENTITY_POOL,
+    });
+
+    const lambda = new AWS.Lambda();
+    const traceAux = Object.assign({}, trace);
+    traceAux.channelCode = HttpConstants.REQUEST_CHANNELS.CHANNEL02;
+    let result;
+
+    try {
+      result = await lambda.invoke({
+        InvocationType: 'RequestResponse',
+        FunctionName: functionName,
+        Payload: JSON.stringify({
+          request: {
+            trace: traceAux,
+            payload: payload,
+          },
+        }),
+      }).promise();
+    } catch (e) {
+      console.log(e);
+      throw new BusinessError({
+        code: e.code,
+        httpCode: e.statusCode,
+        messages: [e.message],
+      });
+    }
+
+    const responsePayload = JSON.parse(result.Payload);
+
+    if (!responsePayload.response.status.success) {
+      const { response: { status: { error } } } = responsePayload;
+      throw new BusinessError({
+        code: error.code,
+        httpCode: error.httpCode,
+        messages: error.messages,
+      });
+    }
+
+    return responsePayload.response.payload;
+  }
+
+  static async invokeFunctionLambda(functionName, trace, payload) {
     AWS.config.region = process.env.region;
     AWS.config.credentials = new AWS.CognitoIdentityCredentials({
       IdentityPoolId: process.env.AWS_IDENTITY_POOL,

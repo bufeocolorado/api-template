@@ -14,7 +14,7 @@ const dbconfig = {
 
 class SasConnection {
   static async _createPool() {
-    if (typeof poolConnection === 'undefined') {
+    if (!poolConnection) {
       poolConnection = await OracleDatabase.createPool(dbconfig);
     }
   }
@@ -24,7 +24,7 @@ class SasConnection {
     const connection = await OracleDatabase.getConnection(poolConnection);
     const result = await OracleDatabase.executeSQL(sql, bindParams, target, connection);
     // TODO: Se esta trabajando en una mejor form de cerrar el pool de conexiones
-    await OracleDatabase.closePool(poolConnection);
+    // await OracleDatabase.closePool(poolConnection);
     return result;
   }
 
@@ -32,7 +32,7 @@ class SasConnection {
     await this._createPool();
     const connection = await OracleDatabase.getConnection(poolConnection);
     const result = await OracleDatabase.executeSP(sql, bindParams, target, connection);
-    await OracleDatabase.closePool(poolConnection);
+    // await OracleDatabase.closePool(poolConnection);
     return result;
   }
 }

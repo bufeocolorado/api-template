@@ -10,10 +10,9 @@ class TemplateService {
   }
 
   static async getUserByLambda(event) {
-    const result = await AwsUtils.invokeFunction(
-      process.env.LAMBDA_GETUSER,
-      event,
-    );
+    const trace = AwsUtils.getTraceRequest(event);
+    const payload = AwsUtils.getPayloadRequest(event);
+    const result = await AwsUtils.invokeFunctionLambda(process.env.LAMBDA_GETUSER, trace, payload);
     return result;
   }
 
