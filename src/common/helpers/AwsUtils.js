@@ -4,9 +4,9 @@ const BusinessError = require('../../common/models/BusinessError');
 const ErrorConstants = require('../constants/errorConstants');
 
 class AwsUtils {
-  static async invokeFunction(functionName, trace, payload) {
-    // const trace = this.getTraceRequest(event);
-    // const payload = this.getPayloadRequest(event);
+  static async invokeFunction(functionName, event) {
+    const trace = this.getTraceRequest(event);
+    const payload = this.getPayloadRequest(event);
 
     AWS.config.region = process.env.region;
     AWS.config.credentials = new AWS.CognitoIdentityCredentials({
