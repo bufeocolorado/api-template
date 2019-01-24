@@ -1,3 +1,1 @@
-module.exports = {
-  PERSON_TYPES: { TYPE01: 'PERSON', TYPE02: 'ENTERPRISE', TYPE03: 'BROKER' },
-};
+module.exports.PERSON_TYPES = { TYPE01: 'PERSON', TYPE02: 'ENTERPRISE', TYPE03: 'BROKER' };

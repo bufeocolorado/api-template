@@ -1,7 +1,8 @@
 const AWS = require('aws-sdk');
-const DomainConstants = require('../../helpers/domainConstants');
-const HttpConstants = require('../../common/constants/httpConstants');
-const BusinessError = require('../../common/models/BusinessError');
+const { HttpConstants } = require('lib-common/constants');
+const { BusinessError } = require('lib-common/models');
+
+const DomainConstants = require('../../helpers/DomainConstants');
 const OnPremiseConnection = require('../connection/SasConnection');
 const CloudConnection = require('../connection/IAATerceroConnection');
 
@@ -130,6 +131,33 @@ class TemplateDb {
       const result = await CloudConnection.executeSQL(
         query, [templateReq.ideTercero], templateRes
       );
+      return result;
+    } catch (error) {
+      console.log(error);
+      throw new BusinessError({
+        code: error.code,
+        httpCode: error.httpCode,
+        messages: error.messages,
+      });
+    }
+  }
+
+  static async executeParallelQuery(payload) {
+    const templateReq = new TemplateReq(payload);
+    const templateRes = new TemplateRes({});
+    const firstQuery = OnPremiseConnection.executeSQL(
+      'select * from app_iaa_tercero.ter_tercero where rownum <= 30',
+      [],
+      templateRes
+    );
+    const secondQuery = OnPremiseConnection.executeSP(
+      'begin app_iaa_tercero.pq_iaa_persona.sp_obt_persona(:idetercero, :cursor); end;',
+      { idetercero: templateReq.ideTercero },
+      templateRes
+    );
+    try {
+      const data = await Promise.all([firstQuery, secondQuery]);
+      const result = [...data[0], ...data[1]];
       return result;
     } catch (error) {
       console.log(error);
