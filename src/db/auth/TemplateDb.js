@@ -126,11 +126,38 @@ class TemplateDb {
     const templateRes = new TemplateRes({});
     try {
       const query = `
-        SELECT * FROM APP_IAA_TERCERO.TER_TERCERO whedre idetercero in (?,2,3)
+        SELECT * FROM APP_IAA_TERCERO.TER_TERCERO where idetercero in (?,2,3)
       `;
       const result = await CloudConnection.executeSQL(
         query, [templateReq.ideTercero], templateRes
       );
+      return result;
+    } catch (error) {
+      console.log(error);
+      throw new BusinessError({
+        code: error.code,
+        httpCode: error.httpCode,
+        messages: error.messages,
+      });
+    }
+  }
+
+  static async executeParallelQuery(payload) {
+    const templateReq = new TemplateReq(payload);
+    const templateRes = new TemplateRes({});
+    const firstQuery = OnPremiseConnection.executeSQL(
+      'select * from app_iaa_tercero.ter_tercero where rownum <= 30',
+      [],
+      templateRes
+    );
+    const secondQuery = OnPremiseConnection.executeSP(
+      'begin app_iaa_tercero.pq_iaa_persona.sp_obt_persona(:idetercero, :cursor); end;',
+      { idetercero: templateReq.ideTercero },
+      templateRes
+    );
+    try {
+      const data = await Promise.all([firstQuery, secondQuery]);
+      const result = [...data[0], ...data[1]];
       return result;
     } catch (error) {
       console.log(error);

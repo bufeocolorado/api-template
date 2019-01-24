@@ -60,6 +60,28 @@ class TemplateController {
       return AwsUtils.buildErrorResponse(event, error);
     }
   }
+
+  static async executeParallelQuery(event) {
+    try {
+      await AppValidator.validateRequest(event);
+      const result = await TemplateService.executeParallelQuery(event);
+      return AwsUtils.buildResponse(event, result);
+    } catch (error) {
+      console.log(error);
+      return AwsUtils.buildErrorResponse(event, error);
+    }
+  }
+
+  static async executeParallelFunctionLambda(event) {
+    try {
+      await AppValidator.validateRequest(event);
+      const result = await TemplateService.executeParallelFunctionLambda(event);
+      return AwsUtils.buildResponse(event, result);
+    } catch (error) {
+      console.log(error);
+      return AwsUtils.buildErrorResponse(event, error);
+    }
+  }
 }
 
 module.exports = TemplateController;

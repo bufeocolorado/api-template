@@ -40,6 +40,6 @@
         "joi": "^14.3.0",
         "nodemailer": "^5.1.1",
         "swagger-ui-express": "4.0.2",
-        "lib-common": "^1.1.5"
+        "lib-common": "^1.2.0"
     }
 }

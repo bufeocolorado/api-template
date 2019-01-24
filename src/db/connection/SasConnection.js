@@ -21,19 +21,29 @@ class SasConnection {
   }
 
   static async executeSQL(sql, bindParams, target) {
+    let cont = 0;
+    const interval = setInterval(() => {
+      console.log(`executeSQL: ${cont += 1}`);
+    }, 10);
     await this._createPool();
     const connection = await OracleDatabase.getConnection(poolConnection);
     const result = await OracleDatabase.executeSQL(sql, bindParams, target, connection);
     // TODO: Se esta trabajando en una mejor form de cerrar el pool de conexiones
     // await OracleDatabase.closePool(poolConnection);
+    clearInterval(interval);
     return result;
   }
 
   static async executeSP(sql, bindParams, target) {
+    let cont = 0;
+    const interval = setInterval(() => {
+      console.log(`executeSP: ${cont += 1}`);
+    }, 10);
     await this._createPool();
     const connection = await OracleDatabase.getConnection(poolConnection);
     const result = await OracleDatabase.executeSP(sql, bindParams, target, connection);
     // await OracleDatabase.closePool(poolConnection);
+    clearInterval(interval);
     return result;
   }
 }

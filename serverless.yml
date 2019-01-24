@@ -56,14 +56,17 @@ provider:
     AWS_SES_HOST: "email-smtp.us-east-1.amazonaws.com"
     AWS_SES_AUTH_USER: "AKIAJ5FYYSKMGRYZSRJA"
     AWS_SES_AUTH_PSS: "AhDvJdDDa5BrDYlIBjxqHjJ2UTxYM9o7eU3fdFDSfIwZ"
-    SAS_CONNECTSTRING: "rsdce-scan.rimac.com.pe/BDSAST3"
-    SAS_USER: "JMENDOZA"
-    SAS_PASSWORD: "sqa2015p"
+    SAS_CONNECTSTRING: "172.23.2.14/BDSAS"
+    SAS_USER: "KCEVALLOSM"
+    SAS_PASSWORD: "KC1111KC"
     SAS_CLOUD_HOST: "ue1dbatestrdsdtlr01.czcriav4h9lp.us-east-2.rds.amazonaws.com"
     SAS_CLOUD_USER: "DS-AWSBDSAS-PCAN"
     SAS_CLOUD_PASSWORD: "R$mac$$2583"
     SAS_CLOUD_DATABASE: "APP_IAA_TERCERO"
     LAMBDA_GETUSER: "UE1API${opt:stage}LMBTEMPLATE001"
+    LAMBDA_EXECUTEQUERYORACLE: "UE1API${opt:stage}LMBTEMPLATE003"
+    LAMBDA_EXECUTEPROCEDUREORACLE: "UE1API${opt:stage}LMBTEMPLATE004"
+    LAMBDA_EXECUTEPARALLELQUERY: "UE1API${opt:stage}LMBTEMPLATE006"
 
 package:
   exclude:
@@ -179,5 +182,55 @@ functions:
     events:
       - http:
           path: /template/executeQueryMySql
+          method: post
+          cors: true
+
+  executeParallelQuery:
+    handler: src/controllers/TemplateController.executeParallelQuery
+    name: UE1API${opt:stage}LMBTEMPLATE006
+    description: Execute Parallel Query
+    tags:
+      NAME: UE1API${opt:stage}LMBTEMPLATE006
+      ENTORNO: DESARROLLO
+      PROYECTO: PORTAL CANALES - MODULO TEMPLATE
+      DOMINIO: RIMAC
+      RESPONSABLE: MIGUEL FARFAN
+      ESTADO_OPERACION: PROYECTO
+      RESPALDO: BSEM
+    vpc:
+     securityGroupIds:
+       - sg-075d2dcb7e1387c65
+       - sg-02a731a9a39029b83
+     subnetIds:
+       - subnet-1a2bf260
+       - subnet-6f5c3c07
+    events:
+      - http:
+          path: /template/executeParallelQuery
+          method: post
+          cors: true
+
+  executeParallelFunctionLambda:
+    handler: src/controllers/TemplateController.executeParallelFunctionLambda
+    name: UE1API${opt:stage}LMBTEMPLATE007
+    description: Execute Parallel Function Lambda
+    tags:
+      NAME: UE1API${opt:stage}LMBTEMPLATE007
+      ENTORNO: DESARROLLO
+      PROYECTO: PORTAL CANALES - MODULO TEMPLATE
+      DOMINIO: RIMAC
+      RESPONSABLE: MIGUEL FARFAN
+      ESTADO_OPERACION: PROYECTO
+      RESPALDO: BSEM
+    vpc:
+     securityGroupIds:
+       - sg-075d2dcb7e1387c65
+       - sg-02a731a9a39029b83
+     subnetIds:
+       - subnet-1a2bf260
+       - subnet-6f5c3c07
+    events:
+      - http:
+          path: /template/executeParallelFunctionLambda
           method: post
           cors: true
