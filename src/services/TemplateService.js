@@ -1,6 +1,6 @@
 
+const { AwsUtils } = require('lib-common/helpers');
 const SecurityDb = require('../db/auth/TemplateDb');
-const AwsUtils = require('../common/helpers/AwsUtils');
 
 class TemplateService {
   static async getUser(event) {
@@ -10,9 +10,9 @@ class TemplateService {
   }
 
   static async getUserByLambda(event) {
-    const trace = AwsUtils.getTraceRequest(event);
-    const payload = AwsUtils.getPayloadRequest(event);
-    const result = await AwsUtils.invokeFunctionLambda(process.env.LAMBDA_GETUSER, trace, payload);
+    const config = { region: process.env.region, identityPool: process.env.AWS_IDENTITY_POOL };
+    const request = AwsUtils.buildRequest(event);
+    const result = await AwsUtils.invokeFunctionLambda(process.env.LAMBDA_GETUSER, request, config);
     return result;
   }
 

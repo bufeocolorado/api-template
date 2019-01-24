@@ -1,4 +1,5 @@
-const OracleDatabase = require('../../common/db/OracleDatabase');
+// const OracleDatabase = require('../../common/db/OracleDatabase');
+const { OracleDatabase } = require('lib-common/db');
 
 let poolConnection;
 

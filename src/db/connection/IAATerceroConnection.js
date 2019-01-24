@@ -1,4 +1,5 @@
-const MySqlDatabase = require('../../common/db/MySqlDatabase');
+// const MySqlDatabase = require('../../common/db/MySqlDatabase');
+const { MySqlDatabase } = require('lib-common/db');
 
 let poolConnection;
 

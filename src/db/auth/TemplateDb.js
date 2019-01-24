@@ -1,7 +1,8 @@
 const AWS = require('aws-sdk');
-const DomainConstants = require('../../helpers/domainConstants');
-const HttpConstants = require('../../common/constants/httpConstants');
-const BusinessError = require('../../common/models/BusinessError');
+const { HttpConstants } = require('lib-common/constants');
+const { BusinessError } = require('lib-common/models');
+
+const DomainConstants = require('../../helpers/DomainConstants');
 const OnPremiseConnection = require('../connection/SasConnection');
 const CloudConnection = require('../connection/IAATerceroConnection');
 
@@ -125,7 +126,7 @@ class TemplateDb {
     const templateRes = new TemplateRes({});
     try {
       const query = `
-        SELECT * FROM APP_IAA_TERCERO.TER_TERCERO where idetercero in (?,2,3)
+        SELECT * FROM APP_IAA_TERCERO.TER_TERCERO whedre idetercero in (?,2,3)
       `;
       const result = await CloudConnection.executeSQL(
         query, [templateReq.ideTercero], templateRes

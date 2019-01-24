@@ -1,6 +1,7 @@
+const { AwsUtils } = require('lib-common/helpers');
+const { AppValidator } = require('lib-common/validations');
+
 const TemplateService = require('../services/TemplateService');
-const AwsUtils = require('../common/helpers/AwsUtils');
-const AppValidator = require('../common/validation/AppValidator');
 const TemplateValidator = require('../validators/TemplateValidator');
 
 

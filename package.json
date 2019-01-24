@@ -9,6 +9,9 @@
         "test": "nyc --reporter=html --reporter=text mocha ./test/*.test.js",
         "coverage": "nyc report --reporter=text-lcov | coveralls"
     },
+    "publishConfig": {
+        "registry": "http://3.17.155.158:10002/repository/npm-private/"
+    },
     "repository": {
         "type": "git",
         "url": "https://gitea.rimaclabs.xyz/portal-canales/api-template.git"
@@ -33,14 +36,10 @@
         "supertest": "^3.3.0"
     },
     "dependencies": {
-        "amazon-cognito-identity-js": "^3.0.6",
         "aws-sdk": "^2.379.0",
-        "joi": "14.3.0",
-        "mysql": "^2.16.0",
-        "oracledb-for-lambda": "^1.9.3-8a",
+        "joi": "^14.3.0",
         "nodemailer": "^5.1.1",
-        "request": "^2.88.0",
-        "request-promise-native": "^1.0.5",
-        "swagger-ui-express": "4.0.2"
+        "swagger-ui-express": "4.0.2",
+        "lib-common": "^1.1.5"
     }
 }
