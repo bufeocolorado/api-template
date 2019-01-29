@@ -7,7 +7,6 @@ const dbconfig = {
   user: process.env.SAS_CLOUD_USER,
   password: process.env.SAS_CLOUD_PASSWORD,
   host: process.env.SAS_CLOUD_HOST,
-  database: process.env.SAS_CLOUD_DATABASE,
 };
 
 class CloudConnection {
