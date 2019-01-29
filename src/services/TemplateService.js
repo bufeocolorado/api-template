@@ -1,5 +1,5 @@
 const { AwsUtils } = require('lib-common/helpers');
-const SecurityDb = require('../db/auth/TemplateDb');
+const SecurityDb = require('../db/TemplateDb');
 
 class TemplateService {
   static async getUser(event) {

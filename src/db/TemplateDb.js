@@ -2,12 +2,12 @@ const AWS = require('aws-sdk');
 const { HttpConstants } = require('lib-common/constants');
 const { BusinessError } = require('lib-common/models');
 
-const DomainConstants = require('../../helpers/DomainConstants');
-const OnPremiseConnection = require('../connection/SasConnection');
-const CloudConnection = require('../connection/IAATerceroConnection');
+const DomainConstants = require('../constants/DomainConstants');
+const EDCOnPremiseConnection = require('./connection/EDCOnPremiseConnection');
+const EDCCloudConnection = require('./connection/EDCCloudConnection');
 
-const TemplateReq = require('../../models/request/TemplateReq');
-const TemplateRes = require('../../models/response/TemplateRes');
+const TemplateReq = require('../models/request/TemplateReq');
+const TemplateRes = require('../models/response/TemplateRes');
 
 AWS.config.region = process.env.region;
 AWS.config.credentials = new AWS.CognitoIdentityCredentials({
@@ -83,7 +83,7 @@ class TemplateDb {
       const query = `
         select * from app_iaa_tercero.ter_tercero where idetercero in (:id,14975180,14975181)
       `;
-      const result = await OnPremiseConnection.executeSQL(
+      const result = await EDCOnPremiseConnection.executeSQL(
         query, [templateReq.ideTercero], templateRes
       );
       return result;
@@ -109,7 +109,7 @@ class TemplateDb {
       const bindvars = {
         idetercero: templateReq.ideTercero,
       };
-      const result = await OnPremiseConnection.executeSP(query, bindvars, templateRes);
+      const result = await EDCOnPremiseConnection.executeSP(query, bindvars, templateRes);
       return result;
     } catch (error) {
       console.log(error);
@@ -128,7 +128,7 @@ class TemplateDb {
       const query = `
         SELECT * FROM APP_IAA_TERCERO.TER_TERCERO where idetercero in (?,2,3)
       `;
-      const result = await CloudConnection.executeSQL(
+      const result = await EDCCloudConnection.executeSQL(
         query, [templateReq.ideTercero], templateRes
       );
       return result;
@@ -145,12 +145,12 @@ class TemplateDb {
   static async executeParallelQuery(payload) {
     const templateReq = new TemplateReq(payload);
     const templateRes = new TemplateRes({});
-    const firstQuery = OnPremiseConnection.executeSQL(
+    const firstQuery = EDCOnPremiseConnection.executeSQL(
       'select * from app_iaa_tercero.ter_tercero where rownum <= 30',
       [],
       templateRes
     );
-    const secondQuery = OnPremiseConnection.executeSP(
+    const secondQuery = EDCOnPremiseConnection.executeSP(
       'begin app_iaa_tercero.pq_iaa_persona.sp_obt_persona(:idetercero, :cursor); end;',
       { idetercero: templateReq.ideTercero },
       templateRes
