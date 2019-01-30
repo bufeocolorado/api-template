@@ -4,8 +4,9 @@ const { BusinessError } = require('lib-common/models');
 
 const DomainConstants = require('../constants/DomainConstants');
 const ErrorConstants = require('../constants/ErrorConstants');
-const EDCOnPremiseConnection = require('./connection/EDCOnPremiseConnection');
-const EDCCloudConnection = require('./connection/EDCCloudConnection');
+const ECDOnPremiseConnection = require('./connection/ECDOnPremiseConnection');
+const AXOnPremiseConnection = require('./connection/AXOnPremiseConnection');
+const ECDCloudConnection = require('./connection/ECDCloudConnection');
 
 const TemplateReq = require('../models/request/TemplateReq');
 const TemplateRes = require('../models/response/TemplateRes');
@@ -84,7 +85,7 @@ class TemplateDb {
       const query = `
         select * from app_iaa_tercero.ter_tercero where idetercero in (:id,14975180,14975181)
       `;
-      const result = await EDCOnPremiseConnection.executeSQL(
+      const result = await ECDOnPremiseConnection.executeSQL(
         query, [templateReq.ideTercero], templateRes
       );
       return result;
@@ -110,7 +111,42 @@ class TemplateDb {
       const bindvars = {
         idetercero: templateReq.ideTercero,
       };
-      const result = await EDCOnPremiseConnection.executeSP(query, bindvars, templateRes);
+      const result = await ECDOnPremiseConnection.executeSP(query, bindvars, templateRes);
+      return result;
+    } catch (error) {
+      console.log(error);
+      throw new BusinessError({
+        code: error.code,
+        httpCode: error.httpCode,
+        messages: error.messages,
+      });
+    }
+  }
+
+  static async executeQueryOracle9i(payload) {
+    // const templateReq = new TemplateReq(payload);
+    const templateRes = {
+      codRamo: undefined,
+      descRamo: undefined,
+    };
+    try {
+      const query = `
+        SELECT DISTINCT R.CODRAMO, R.DESCRAMO
+        FROM CERTIFICADO C, CERT_RAMO CR, RAMO R, COBERT_CERT CC
+        WHERE C.NUMCERT = CR.NUMCERT AND
+        CR.NUMCERT = CC.NUMCERT AND
+        C.IDEPOL = CR.IDEPOL AND
+        CR.IDEPOL = CC.IDEPOL AND
+        CR.CODRAMOCERT = CC.CODRAMOCERT AND
+        R.CODRAMO = CR.CODRAMOCERT AND
+        C.STSCERT IN ('ACT', 'REN') AND
+        CR.STSCERTRAMO IN ('ACT', 'REN') AND
+        CC.STSCOBERT NOT IN ('VAL', 'INC', 'EXC', 'ANU') 
+        AND C.IDEPOL = 125933 AND C.NUMCERT = 1
+      `;
+      const result = await AXOnPremiseConnection.executeSQL(
+        query, [], templateRes
+      );
       return result;
     } catch (error) {
       console.log(error);
@@ -129,7 +165,7 @@ class TemplateDb {
       const query = `
         SELECT * FROM APP_IAA_TERCERO.TER_TERCERO where idetercero in (?,2,3)
       `;
-      const result = await EDCCloudConnection.executeSQL(
+      const result = await ECDCloudConnection.executeSQL(
         query, [templateReq.ideTercero], templateRes
       );
       return result;
@@ -146,12 +182,12 @@ class TemplateDb {
   static async executeParallelQuery(payload) {
     const templateReq = new TemplateReq(payload);
     const templateRes = new TemplateRes({});
-    const firstQuery = EDCOnPremiseConnection.executeSQL(
+    const firstQuery = ECDOnPremiseConnection.executeSQL(
       'select * from app_iaa_tercero.ter_tercero where rownum <= 30',
       [],
       templateRes
     );
-    const secondQuery = EDCOnPremiseConnection.executeSP(
+    const secondQuery = ECDOnPremiseConnection.executeSP(
       'begin app_iaa_tercero.pq_iaa_persona.sp_obt_persona(:idetercero, :cursor); end;',
       { idetercero: templateReq.ideTercero },
       templateRes

@@ -56,12 +56,15 @@ provider:
     AWS_SES_HOST: "email-smtp.us-east-1.amazonaws.com"
     AWS_SES_AUTH_USER: "AKIAJ5FYYSKMGRYZSRJA"
     AWS_SES_AUTH_PSS: "AhDvJdDDa5BrDYlIBjxqHjJ2UTxYM9o7eU3fdFDSfIwZ"
-    SAS_CONNECTSTRING: "172.23.2.14/BDSAS"
-    SAS_USER: "KCEVALLOSM"
-    SAS_PASSWORD: "KC1111KC"
-    SAS_CLOUD_HOST: "ue1dbatestrdsdtlr01.czcriav4h9lp.us-east-2.rds.amazonaws.com"
-    SAS_CLOUD_USER: "DS-AWSBDSAS-PCAN"
-    SAS_CLOUD_PASSWORD: "R$mac$$2583"
+    ECD_ONPREMISE_CONNECTSTRING: "172.23.2.14/BDSAST1"
+    ECD_ONPREMISE_USER: "KCEVALLOSM"
+    ECD_ONPREMISE_PASSWORD: "KC1111KC"
+    ECD_CLOUD_HOST: "ue1dbatestrdsdtlr01.czcriav4h9lp.us-east-2.rds.amazonaws.com"
+    ECD_CLOUD_USER: "DS-AWSBDSAS-PCAN"
+    ECD_CLOUD_PASSWORD: "R$mac$$2583"
+    AX_ONPREMISE_CONNECTSTRING: "172.24.100.83:1521/BDDESA"
+    AX_ONPREMISE_USER: "acselx"
+    AX_ONPREMISE_PASSWORD: "ac666ac"
     LAMBDA_GETUSER: "UE1API${opt:stage}LMBTEMPLATE001"
     LAMBDA_EXECUTEQUERYORACLE: "UE1API${opt:stage}LMBTEMPLATE003"
     LAMBDA_EXECUTEPROCEDUREORACLE: "UE1API${opt:stage}LMBTEMPLATE004"
@@ -231,5 +234,30 @@ functions:
     events:
       - http:
           path: /template/executeParallelFunctionLambda
+          method: post
+          cors: true
+  
+  executeQueryOracle9i:
+    handler: src/controllers/TemplateController.executeQueryOracle9i
+    name: UE1API${opt:stage}LMBTEMPLATE008
+    description: Execute Query Oracle en 9i
+    tags:
+      NAME: UE1API${opt:stage}LMBTEMPLATE008
+      ENTORNO: DESARROLLO
+      PROYECTO: PORTAL CANALES - MODULO TEMPLATE
+      DOMINIO: RIMAC
+      RESPONSABLE: MIGUEL FARFAN
+      ESTADO_OPERACION: PROYECTO
+      RESPALDO: BSEM 
+    vpc:
+     securityGroupIds:
+       - sg-075d2dcb7e1387c65
+       - sg-02a731a9a39029b83
+     subnetIds:
+       - subnet-1a2bf260
+       - subnet-6f5c3c07
+    events:
+      - http:
+          path: /template/executeQueryOracle9i
           method: post
           cors: true

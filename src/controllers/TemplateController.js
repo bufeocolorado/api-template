@@ -39,6 +39,17 @@ class TemplateController {
     }
   }
 
+  static async executeQueryOracle9i(event, context) {
+    try {
+      await AppValidator.validateRequest(event);
+      const result = await TemplateService.executeQueryOracle9i(event);
+      return AwsUtils.buildResponse(event, result);
+    } catch (error) {
+      console.log(error);
+      return AwsUtils.buildErrorResponse(event, error);
+    }
+  }
+
   static async executeProcedureOracle(event, context) {
     try {
       await AppValidator.validateRequest(event);

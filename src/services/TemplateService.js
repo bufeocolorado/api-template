@@ -23,6 +23,12 @@ class TemplateService {
     return result;
   }
 
+  static async executeQueryOracle9i(event) {
+    const payload = AwsUtils.getPayloadRequest(event);
+    const result = await SecurityDb.executeQueryOracle9i(payload);
+    return result;
+  }
+
   static async executeProcedureOracle(event) {
     const payload = AwsUtils.getPayloadRequest(event);
     const result = await SecurityDb.executeProcedureOracle(payload);
