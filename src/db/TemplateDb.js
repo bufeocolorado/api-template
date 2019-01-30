@@ -3,6 +3,7 @@ const { HttpConstants } = require('lib-common/constants');
 const { BusinessError } = require('lib-common/models');
 
 const DomainConstants = require('../constants/DomainConstants');
+const ErrorConstants = require('../constants/ErrorConstants');
 const EDCOnPremiseConnection = require('./connection/EDCOnPremiseConnection');
 const EDCCloudConnection = require('./connection/EDCCloudConnection');
 
@@ -32,9 +33,9 @@ class TemplateDb {
       params.UserPoolId = process.env.AWS_USER_POOL_ID_BROKER;
     } else {
       throw new BusinessError({
-        code: undefined,
+        code: ErrorConstants.Error100301.code,
         httpCode: HttpConstants.BAD_REQUEST_STATUS.code,
-        messages: ['Debe ingresar un tipo válido.'],
+        messages: [ErrorConstants.Error100301.message],
       });
     }
 
@@ -42,9 +43,9 @@ class TemplateDb {
     const result = await cognitoidentityserviceprovider.listUsers(params).promise();
     if (!result.Users.length) {
       throw new BusinessError({
-        code: 'NotFoundException',
+        code: ErrorConstants.Error100302.code,
         httpCode: HttpConstants.BAD_REQUEST_STATUS.code,
-        messages: ['El usuario no existe.'],
+        messages: [ErrorConstants.Error100302.message],
       });
     }
 
