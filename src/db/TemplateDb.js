@@ -34,9 +34,9 @@ class TemplateDb {
       params.UserPoolId = process.env.AWS_USER_POOL_ID_BROKER;
     } else {
       throw new BusinessError({
-        code: ErrorConstants.Error100301.code,
+        code: ErrorConstants.ERROR_100301.code,
         httpCode: HttpConstants.BAD_REQUEST_STATUS.code,
-        messages: [ErrorConstants.Error100301.message],
+        messages: [ErrorConstants.ERROR_100301.message],
       });
     }
 
@@ -44,9 +44,9 @@ class TemplateDb {
     const result = await cognitoidentityserviceprovider.listUsers(params).promise();
     if (!result.Users.length) {
       throw new BusinessError({
-        code: ErrorConstants.Error100302.code,
+        code: ErrorConstants.ERROR_100302.code,
         httpCode: HttpConstants.BAD_REQUEST_STATUS.code,
-        messages: [ErrorConstants.Error100302.message],
+        messages: [ErrorConstants.ERROR_100302.message],
       });
     }
 
@@ -124,28 +124,31 @@ class TemplateDb {
   }
 
   static async executeQueryOracle9i(payload) {
-    // const templateReq = new TemplateReq(payload);
     const templateRes = {
       codRamo: undefined,
       descRamo: undefined,
     };
+
+    payload.idepol = 125933;
+    payload.numcert = 1;
+    
     try {
       const query = `
-        SELECT DISTINCT R.CODRAMO, R.DESCRAMO
-        FROM CERTIFICADO C, CERT_RAMO CR, RAMO R, COBERT_CERT CC
-        WHERE C.NUMCERT = CR.NUMCERT AND
-        CR.NUMCERT = CC.NUMCERT AND
-        C.IDEPOL = CR.IDEPOL AND
-        CR.IDEPOL = CC.IDEPOL AND
-        CR.CODRAMOCERT = CC.CODRAMOCERT AND
-        R.CODRAMO = CR.CODRAMOCERT AND
-        C.STSCERT IN ('ACT', 'REN') AND
-        CR.STSCERTRAMO IN ('ACT', 'REN') AND
-        CC.STSCOBERT NOT IN ('VAL', 'INC', 'EXC', 'ANU') 
-        AND C.IDEPOL = 125933 AND C.NUMCERT = 1
+        select distinct r.codramo, r.descramo
+        from certificado c, cert_ramo cr, ramo r, cobert_cert cc
+        where c.numcert = cr.numcert and
+        cr.numcert = cc.numcert and
+        c.idepol = cr.idepol and
+        cr.idepol = cc.idepol and
+        cr.codramocert = cc.codramocert and
+        r.codramo = cr.codramocert and
+        c.stscert in ('ACT', 'REN') and
+        cr.stscertramo in ('ACT', 'REN') and
+        cc.stscobert not in ('VAL', 'INC', 'EXC', 'ANU') 
+        and c.idepol = :idepol and c.numcert = :numcert
       `;
       const result = await AXOnPremiseConnection.executeSQL(
-        query, [], templateRes
+        query, [payload.idepol, payload.numcert], templateRes
       );
       return result;
     } catch (error) {
