@@ -1,4 +1,4 @@
-service: UE1API${opt:stage}APITEMPLATE001
+service: UE1MTO${opt:stage}ACFTEMPLATE001
 
 plugins:
   - serverless-plugin-include-dependencies
@@ -77,10 +77,10 @@ package:
 functions:
   getUser:
     handler: src/controllers/TemplateController.getUser
-    name: UE1API${opt:stage}LMBTEMPLATE001
+    name: UE1COM${opt:stage}LMBTEMPLATE001
     description: BUSCA USUARIO POR TIPO 
     tags:
-      NAME: UE1API${opt:stage}LMBTEMPLATE001
+      NAME: UE1COM${opt:stage}LMBTEMPLATE001
       ENTORNO: DESARROLLO
       PROYECTO: PORTAL CANALES - MODULO TEMPLATE
       DOMINIO: RIMAC
@@ -95,10 +95,10 @@ functions:
 
   getUserByLambda:
     handler: src/controllers/TemplateController.getUserByLambda
-    name: UE1API${opt:stage}LMBTEMPLATE002
+    name: UE1COM${opt:stage}LMBTEMPLATE002
     description: OBTENER USUARIOS POR TIPO DESDE LAMBDA
     tags:
-      NAME: UE1API${opt:stage}LMBTEMPLATE002
+      NAME: UE1COM${opt:stage}LMBTEMPLATE002
       ENTORNO: DESARROLLO
       PROYECTO: PORTAL CANALES - MODULO TEMPLATE
       DOMINIO: RIMAC
@@ -113,10 +113,10 @@ functions:
 
   executeQueryOracle:
     handler: src/controllers/TemplateController.executeQueryOracle
-    name: UE1API${opt:stage}LMBTEMPLATE003
+    name: UE1COM${opt:stage}LMBTEMPLATE003
     description: Execute Query Oracle
     tags:
-      NAME: UE1API${opt:stage}LMBTEMPLATE003
+      NAME: UE1COM${opt:stage}LMBTEMPLATE003
       ENTORNO: DESARROLLO
       PROYECTO: PORTAL CANALES - MODULO TEMPLATE
       DOMINIO: RIMAC
@@ -138,10 +138,10 @@ functions:
 
   executeProcedureOracle:
     handler: src/controllers/TemplateController.executeProcedureOracle
-    name: UE1API${opt:stage}LMBTEMPLATE004
+    name: UE1COM${opt:stage}LMBTEMPLATE004
     description: Execute Query Oracle
     tags:
-      NAME: UE1API${opt:stage}LMBTEMPLATE004
+      NAME: UE1COM${opt:stage}LMBTEMPLATE004
       ENTORNO: DESARROLLO
       PROYECTO: PORTAL CANALES - MODULO TEMPLATE
       DOMINIO: RIMAC
@@ -163,10 +163,10 @@ functions:
 
   executeQueryMySql:
     handler: src/controllers/TemplateController.executeQueryMySql
-    name: UE1API${opt:stage}LMBTEMPLATE005
+    name: UE1COM${opt:stage}LMBTEMPLATE005
     description: Execute Query Mysql
     tags:
-      NAME: UE1API${opt:stage}LMBTEMPLATE005
+      NAME: UE1COM${opt:stage}LMBTEMPLATE005
       ENTORNO: DESARROLLO
       PROYECTO: PORTAL CANALES - MODULO TEMPLATE
       DOMINIO: RIMAC
@@ -189,10 +189,10 @@ functions:
 
   executeParallelQuery:
     handler: src/controllers/TemplateController.executeParallelQuery
-    name: UE1API${opt:stage}LMBTEMPLATE006
+    name: UE1COM${opt:stage}LMBTEMPLATE006
     description: Execute Parallel Query
     tags:
-      NAME: UE1API${opt:stage}LMBTEMPLATE006
+      NAME: UE1COM${opt:stage}LMBTEMPLATE006
       ENTORNO: DESARROLLO
       PROYECTO: PORTAL CANALES - MODULO TEMPLATE
       DOMINIO: RIMAC
@@ -214,10 +214,10 @@ functions:
 
   executeParallelFunctionLambda:
     handler: src/controllers/TemplateController.executeParallelFunctionLambda
-    name: UE1API${opt:stage}LMBTEMPLATE007
+    name: UE1COM${opt:stage}LMBTEMPLATE007
     description: Execute Parallel Function Lambda
     tags:
-      NAME: UE1API${opt:stage}LMBTEMPLATE007
+      NAME: UE1COM${opt:stage}LMBTEMPLATE007
       ENTORNO: DESARROLLO
       PROYECTO: PORTAL CANALES - MODULO TEMPLATE
       DOMINIO: RIMAC
@@ -239,10 +239,10 @@ functions:
   
   executeQueryOracle9i:
     handler: src/controllers/TemplateController.executeQueryOracle9i
-    name: UE1API${opt:stage}LMBTEMPLATE008
+    name: UE1COM${opt:stage}LMBTEMPLATE008
     description: Execute Query Oracle en 9i
     tags:
-      NAME: UE1API${opt:stage}LMBTEMPLATE008
+      NAME: UE1COM${opt:stage}LMBTEMPLATE008
       ENTORNO: DESARROLLO
       PROYECTO: PORTAL CANALES - MODULO TEMPLATE
       DOMINIO: RIMAC
@@ -261,3 +261,10 @@ functions:
           path: /template/executeQueryOracle9i
           method: post
           cors: true
+
+resources:
+  Resources:
+    ApiGatewayRestApi:
+      Type: "AWS::ApiGateway::RestApi"
+      Properties:
+        Name: "UE1NET${opt:stage}APITEMPLATE001"
