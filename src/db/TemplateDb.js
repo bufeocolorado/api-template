@@ -1,8 +1,10 @@
 const AWS = require('aws-sdk');
+const oracledb = require('oracledb');
 const { HttpConstants } = require('lib-common/constants');
 const { BusinessError } = require('lib-common/models');
 
 const DomainConstants = require('../constants/DomainConstants');
+const QueryConstants = require('../constants/QueryConstants');
 const ErrorConstants = require('../constants/ErrorConstants');
 const ECDOnPremiseConnection = require('./connection/ECDOnPremiseConnection');
 const AXOnPremiseConnection = require('./connection/AXOnPremiseConnection');
@@ -82,9 +84,7 @@ class TemplateDb {
     const templateReq = new TemplateReq(payload);
     const templateRes = new TemplateRes({});
     try {
-      const query = `
-        select * from app_iaa_tercero.ter_tercero where idetercero in (:id,14975180,14975181)
-      `;
+      const query = QueryConstants.EXECUTE_QUERY_ORACLE;
       const result = await ECDOnPremiseConnection.executeSQL(
         query, [templateReq.ideTercero], templateRes
       );
@@ -103,13 +103,17 @@ class TemplateDb {
     const templateReq = new TemplateReq(payload);
     const templateRes = new TemplateRes({});
     try {
-      const query = `
-      begin
-        app_iaa_tercero.pq_iaa_persona.sp_obt_persona(:idetercero, :cursor);
-      end;
-      `;
+      const query = QueryConstants.EXECUTE_PROCEDURE_ORACLE;
       const bindvars = {
-        idetercero: templateReq.ideTercero,
+        ideTercero: {
+          type: oracledb.NUMBER,
+          dir: oracledb.BIND_IN,
+          val: templateReq.ideTercero,
+        },
+        cursor: {
+          type: oracledb.CURSOR,
+          dir: oracledb.BIND_OUT,
+        },
       };
       const result = await ECDOnPremiseConnection.executeSP(query, bindvars, templateRes);
       return result;
@@ -133,20 +137,7 @@ class TemplateDb {
     payload.numcert = 1;
     
     try {
-      const query = `
-        select distinct r.codramo, r.descramo
-        from certificado c, cert_ramo cr, ramo r, cobert_cert cc
-        where c.numcert = cr.numcert and
-        cr.numcert = cc.numcert and
-        c.idepol = cr.idepol and
-        cr.idepol = cc.idepol and
-        cr.codramocert = cc.codramocert and
-        r.codramo = cr.codramocert and
-        c.stscert in ('ACT', 'REN') and
-        cr.stscertramo in ('ACT', 'REN') and
-        cc.stscobert not in ('VAL', 'INC', 'EXC', 'ANU') 
-        and c.idepol = :idepol and c.numcert = :numcert
-      `;
+      const query = QueryConstants.EXECUTE_QUERY_ORACLE9I;
       const result = await AXOnPremiseConnection.executeSQL(
         query, [payload.idepol, payload.numcert], templateRes
       );
@@ -165,9 +156,7 @@ class TemplateDb {
     const templateReq = new TemplateReq(payload);
     const templateRes = new TemplateRes({});
     try {
-      const query = `
-        SELECT * FROM APP_IAA_TERCERO.TER_TERCERO where idetercero in (?,2,3)
-      `;
+      const query = QueryConstants.EXECUTE_QUERY_MYSQL;
       const result = await ECDCloudConnection.executeSQL(
         query, [templateReq.ideTercero], templateRes
       );
@@ -186,12 +175,12 @@ class TemplateDb {
     const templateReq = new TemplateReq(payload);
     const templateRes = new TemplateRes({});
     const firstQuery = ECDOnPremiseConnection.executeSQL(
-      'select * from app_iaa_tercero.ter_tercero where rownum <= 30',
+      QueryConstants.EXECUTE_PARALLEL_QUERY,
       [],
       templateRes
     );
     const secondQuery = ECDOnPremiseConnection.executeSP(
-      'begin app_iaa_tercero.pq_iaa_persona.sp_obt_persona(:idetercero, :cursor); end;',
+      QueryConstants.EXECUTE_PROCEDURE_ORACLE,
       { idetercero: templateReq.ideTercero },
       templateRes
     );

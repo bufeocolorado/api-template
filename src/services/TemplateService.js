@@ -1,4 +1,5 @@
 const { AwsUtils } = require('lib-common/helpers');
+const TemplateSupport = require('./supports/TemplateSupport')
 const SecurityDb = require('../db/TemplateDb');
 
 class TemplateService {
@@ -52,9 +53,9 @@ class TemplateService {
     const trace = AwsUtils.getTraceRequest(event);
     const payload = AwsUtils.getPayloadRequest(event);
     const request = AwsUtils.buildRequest(trace, payload);
-    const promise01 = AwsUtils.invokeFunctionLambdaPromise(process.env.LAMBDA_EXECUTEQUERYORACLE, request, config);
-    const promise02 = AwsUtils.invokeFunctionLambdaPromise(process.env.LAMBDA_EXECUTEPROCEDUREORACLE, request, config);
-    const promise03 = AwsUtils.invokeFunctionLambdaPromise(process.env.LAMBDA_EXECUTEPARALLELQUERY, request, config);
+    const promise01 = TemplateSupport.getpromise01(request, config);
+    const promise02 = TemplateSupport.getpromise02(request, config);
+    const promise03 = TemplateSupport.getpromise03(request, config);
 
     const data = await Promise.all([
       promise01,
