@@ -1,7 +1,7 @@
 {
-    "name": "api-template",
+    "name": "aip-api-sistema",
     "version": "1.0.0",
-    "description": "Proyecto que sirve como template para el desarrollo de APIs. Portales RIMAC.",
+    "description": "APIs del módulo de sistema del proyecto de Inspecciones Patrimoniales.",
     "scripts": {
         "lint": "eslint src test || exit 0",
         "start": "sls offline start --stage DESA",
@@ -11,10 +11,10 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://gitea.rimaclabs.xyz/portal-canales/api-template.git"
+        "url": "https://gitea.rimaclabs.xyz/portal-canales/aip-api-sistema.git"
     },
     "keywords": [],
-    "author": "micom",
+    "author": "Equipo Experis Ágil.",
     "license": "ISC",
     "devDependencies": {
         "chai": "4.2.0",
@@ -35,7 +35,6 @@
         "aws-sdk": "^2.379.0",
         "joi": "^14.3.0",
         "nodemailer": "^5.1.1",
-        "swagger-ui-express": "4.0.2",
         "oracledb": "^3.1.1",
         "mysql": "^2.16.0",
         "lib-common": "^1.3.4"
