@@ -7,7 +7,7 @@ plugins:
 provider:
   name: aws
   runtime: nodejs8.10
-  region: us-east-2
+  region: us-east-1
   stage: ${opt:stage}
   timeout: 120
   memorySize: 512
@@ -20,9 +20,9 @@ provider:
     name: "ue1stgdesaas3prv001"
     # name: "ue1stgtestas3prv001"
     ENTORNO: DESARROLLO
-    PROYECTO: PORTAL CANALES
+    PROYECTO: INSPECCIONES PATRIMONIALES
     DOMINIO: RIMAC
-    RESPONSABLE: DANNY ESCALANTE
+    RESPONSABLE: EXPERIS
     ESTADO_OPERACION: PROYECTO
     RESPALDO: BSEM
 
